@@ -10,10 +10,11 @@ CALL {
     ON CREATE SET p.first_name = row.first_name, 
                   p.last_name = row.last_name,
                   p.raw_name = row.first_name + " " + row.last_name
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 
 // Company node creation
+CREATE INDEX FOR (c:Company) ON (c.company_id);
 CREATE INDEX FOR (c:Company) ON (c.company_name);
 
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/company_fixed.csv' AS row
@@ -25,7 +26,7 @@ CALL {
                   c.status = CASE WHEN row.status <> '' THEN row.status ELSE NULL END,
                   c.start_date = CASE WHEN row.start_date <> '' THEN row.start_date ELSE NULL END,
                   c.company_id_generic = CASE WHEN row.company_id_generic <> '' THEN row.company_id_generic ELSE NULL END
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 //IS_SHAREHOLDER relationship creation (from Person to Company)
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/shareholding_relation_person_fixed.csv' AS row
@@ -44,7 +45,7 @@ CALL {
                   r.species_of_the_owner_of_the_owner = CASE WHEN row.the_species_of_the_owner_of_the_owner <> '' THEN row.the_species_of_the_owner_of_the_owner ELSE NULL END,
                   r.type_of_shareholding = CASE WHEN row.type_of_shareholding <> '' THEN row.type_of_shareholding ELSE NULL END,
                   r.role_of_shareholder = CASE WHEN row.role_of_shareholder <> '' THEN row.role_of_shareholder ELSE NULL END
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 //TODO
 //IS_SHAREHOLDER relationship creation (from Company to Company)
@@ -63,7 +64,7 @@ CALL {
                   r.species_of_the_owner_of_the_owner = CASE WHEN row.the_species_of_the_owner_of_the_owner <> '' THEN row.the_species_of_the_owner_of_the_owner ELSE NULL END,
                   r.type_of_shareholding = CASE WHEN row.type_of_shareholding <> '' THEN row.type_of_shareholding ELSE NULL END,
                   r.role_of_shareholder = CASE WHEN row.role_of_shareholder <> '' THEN row.role_of_shareholder ELSE NULL END
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 //HAS_ADDRESS relationship creation (from Person to Address)
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/person_address_fixed.csv' AS row
@@ -78,7 +79,7 @@ CALL {
     
     MERGE (p)-[r:HAS_ADDRESS]->(a)  
     ON CREATE SET r.source_of_address = CASE WHEN row.source_of_address <> '' THEN row.source_of_address ELSE NULL END
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 //HAS_ADDRESS relationship creation (from Company to Address)
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/company_address_fixed.csv' AS row
@@ -92,7 +93,7 @@ CALL {
 
     MERGE (c)-[r:HAS_ADDRESS]->(a)  
     ON CREATE SET r.source_of_address = CASE WHEN row.source_of_address <> '' THEN row.source_of_address ELSE NULL END
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 //IS_BENEFICIARY relationship creation (from Person to Company)
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/beneficiar_fixed.csv' AS row
@@ -107,7 +108,7 @@ CALL {
                   r.control_type = CASE WHEN row.the_way_in_which_the_control_is_done_as_text <> '' THEN row.the_way_in_which_the_control_is_done_as_text ELSE NULL END,
                   r.disconnection_notice_submitted = CASE WHEN row.Disconnection_Notice_submitted <> '' THEN row.Disconnection_Notice_submitted ELSE NULL END,
                   r.role_of_ben = CASE WHEN row.role_of_ben <> '' THEN row.role_of_ben ELSE NULL END
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 //Add Role to Person
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/person_role_fixed.csv' AS row
@@ -120,11 +121,11 @@ CALL {
         WHEN p.role IS NULL THEN [row.role_within_data]
         ELSE p.role + [row.role_within_data]
     END
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
 
 
 //Remove raw_name property from Person nodes
 :auto CALL {
     MATCH (a:Person)
     REMOVE a.raw_name
-} IN TRANSACTIONS OF 10000 ROWS;
+} IN TRANSACTIONS OF 1000 ROWS;
