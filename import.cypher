@@ -47,7 +47,6 @@ CALL {
                   r.role_of_shareholder = CASE WHEN row.role_of_shareholder <> '' THEN row.role_of_shareholder ELSE NULL END
 } IN TRANSACTIONS OF 1000 ROWS;
 
-//TODO
 //IS_SHAREHOLDER relationship creation (from Company to Company)
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/shareholding_relation_company_fixed.csv' AS row
 WITH row
@@ -66,7 +65,12 @@ CALL {
                   r.role_of_shareholder = CASE WHEN row.role_of_shareholder <> '' THEN row.role_of_shareholder ELSE NULL END
 } IN TRANSACTIONS OF 1000 ROWS;
 
+
+
 //HAS_ADDRESS relationship creation (from Person to Address)
+CREATE INDEX FOR (p:Address) ON (p.address);
+
+
 :auto LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/andre91a/estfiu-dataset/refs/heads/main/fixed/person_address_fixed.csv' AS row
 WITH row
 WHERE row.address IS NOT NULL 
