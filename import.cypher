@@ -121,3 +121,10 @@ CALL {
         ELSE p.role + [row.role_within_data]
     END
 } IN TRANSACTIONS OF 10000 ROWS;
+
+
+//Remove raw_name property from Person nodes
+:auto CALL {
+    MATCH (a:Person)
+    REMOVE a.raw_name
+} IN TRANSACTIONS OF 10000 ROWS;
