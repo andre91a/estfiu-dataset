@@ -54,7 +54,7 @@ CALL {
     WITH row
     MATCH (c1:Company {company_id: row.company_id})
     MATCH (c2:Company {company_name: row.company_name}) 
-    MERGE (c1)-[r:IS_SHAREOLDER]->(c2)
+    MERGE (c1)-[r:IS_SHAREHOLDER]->(c2)
     ON CREATE SET r.percentage_of_participation = CASE WHEN row.percentage_of_participation <> '' THEN toFloat(row.percentage_of_participation) ELSE NULL END,
                   r.size_of_the_participation = CASE WHEN row.the_size_of_the_participation <> '' THEN toFloat(row.the_size_of_the_participation) ELSE NULL END,
                   r.currency_of_the_stake = CASE WHEN row.the_currency_of_the_stake <> '' THEN row.the_currency_of_the_stake ELSE NULL END,
