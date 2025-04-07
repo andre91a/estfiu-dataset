@@ -122,8 +122,8 @@ CALL {
     WITH row
     MATCH (p:Person {raw_name: row.first_name + " " + row.last_name})
     SET p.role = CASE 
-        WHEN p.role IS NULL THEN [row.role_within_data]
-        ELSE p.role + [row.role_within_data]
+        WHEN p.role IS NULL THEN row.role_within_data
+        ELSE p.role + ", " + row.role_within_data
     END
 } IN TRANSACTIONS OF 1000 ROWS;
 
